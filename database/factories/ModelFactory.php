@@ -22,3 +22,17 @@ $factory->define(App\User::class, function (Faker\Generator $faker) {
         'remember_token' => str_random(10),
     ];
 });
+
+/** @var \Illuminate\Database\Eloquent\Factory $factory */
+$factory->define(App\Form::class, function (Faker\Generator $faker) {
+    static $password;
+
+    $form_types = App\Form\Types::get();
+    $total_form_types = count($form_types) - 1;
+    $type = $form_types[rand(0,$total_form_types)];
+
+    return [
+        'user_id' => auth()->id() ?: factory('App\User')->create(),
+        'type' => $type
+    ];
+});
