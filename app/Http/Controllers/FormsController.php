@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Form;
+use App\FormField;
+use App\Form\FieldTypes;
 use App\Http\Requests\UserFormRequest;
 use Illuminate\Http\Request;
 
@@ -45,9 +47,34 @@ class FormsController extends Controller
      */
     public function store(UserFormRequest $request)
     {
-        Form::create([
+        $form = Form::create([
             'user_id' => auth()->id(),
             'type' => request('type')
+        ]);
+
+        if (! empty(request('fields'))) {
+            collect(request('fields'))->each(function($field) use ($form) {
+                $this->storeField($field, $form->id);
+            });
+        }
+    }
+    
+    /**
+     * Store a newly created resource in storage.
+     * 
+     * @param  array  $request
+     * @param  integer $form_id
+     * @return \Illuminate\Http\Response
+     */
+    public function storeField($request, $form_id)
+    {
+        FormField::create([
+            'form_id' => $form_id,
+            'name' => trim(strtolower($request['name'])),
+            'type' => trim(strtolower($request['type'])),
+            'value' => trim(strtolower($request['value'])),
+            'final_value' => trim(strtolower($request['final_value'])),
+            'affects' => trim(strtolower($request['affects'])),
         ]);
     }
 

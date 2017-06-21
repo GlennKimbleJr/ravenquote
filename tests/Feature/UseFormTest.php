@@ -55,5 +55,11 @@ class UseFormTest extends TestCase
     
         // Assert
     }
+
+    /** @test */
+    public function forms_can_be_soft_deleted()
+    {
+        
+    }
 }
 

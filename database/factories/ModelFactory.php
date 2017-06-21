@@ -25,8 +25,6 @@ $factory->define(App\User::class, function (Faker\Generator $faker) {
 
 /** @var \Illuminate\Database\Eloquent\Factory $factory */
 $factory->define(App\Form::class, function (Faker\Generator $faker) {
-    static $password;
-
     $form_types = App\Form\Types::get();
     $total_form_types = count($form_types) - 1;
     $type = $form_types[rand(0,$total_form_types)];
@@ -34,5 +32,21 @@ $factory->define(App\Form::class, function (Faker\Generator $faker) {
     return [
         'user_id' => auth()->id() ?: factory('App\User')->create(),
         'type' => $type
+    ];
+});
+
+/** @var \Illuminate\Database\Eloquent\Factory $factory */
+$factory->define(App\FormField::class, function (Faker\Generator $faker) {
+    $field_types = App\Form\FieldTypes::get();
+    $total_field_types = count($field_types) - 1;
+    $type = $field_types[rand(0,$total_field_types)];
+
+    return [
+        'form_id' => factory('App\Form')->create(),
+        'name' => $faker->sentence,
+        'type' => $type,
+        'value' => 'fake_value',
+        'final_value' => 'fake_final_value',
+        'affects' => 'total',
     ];
 });

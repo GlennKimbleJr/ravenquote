@@ -11,8 +11,11 @@ class NewFormTest extends TestCase
     {
         $this->withExceptionHandling();
 
-        $this->get('/forms/create')->assertStatus(302);
-        $this->post('/forms')->assertStatus(302);
+        $this->get('/forms/create')
+            ->assertStatus(302);
+        
+        $this->post('/forms')
+            ->assertStatus(302);
     }
 
     /** @test */
@@ -21,8 +24,12 @@ class NewFormTest extends TestCase
         $this->signIn();
         $this->assertDatabaseMissing('forms', ['user_id' => auth()->id()]);
         
-        $this->get('/forms/create')->assertStatus(200);
-        $this->post('/forms', make('App\Form')->toArray());
+        $this->get('/forms/create')
+            ->assertStatus(200);
+
+        $this->post('/forms', 
+            make('App\Form')->toArray()
+        );
 
         $this->assertDatabaseHas('forms', ['user_id' => auth()->id()]);
     }
@@ -135,140 +142,247 @@ class NewFormTest extends TestCase
     /** @test */
     public function forms_have_fields()
     {
-        // Arrange
-    
-        // Act
-    
-        // Assert
+        $this->signIn();
+
+        $field = create('App\FormField');
+
+        $this->assertDatabaseHas('form_fields', ['id' => $field->id]);
+        $this->assertDatabaseHas('forms', ['id' => $field->form_id]);
     }
 
     /** @test */
     public function form_fields_have_a_name()
     {
-        // Arrange
-    
-        // Act
-    
-        // Assert
+        $this->signIn();
+
+        $name = 'Form Field Name Test';
+        $field = create('App\FormField', ['name' => $name]);
+
+        $this->assertEquals($name, $field->name);
     }
 
     /** @test */
-    public function form_fields_can_be_radio_buttons()
+    public function form_fields_can_be_radio_button()
     {
-        // Arrange
-    
-        // Act
-    
-        // Assert
+        $this->signIn();
+        $allowable_types = \App\Form\FieldTypes::get();
+        $this->assertContains('radio_button', $allowable_types);
+
+        $form = make('App\Form')->toArray();
+        $form['fields'] = [
+            make('App\FormField', ['type' => 'radio_button'])->toArray(),
+        ];
+        $request = $this->post('/forms', $form);
+
+        $this->assertDatabaseHas('form_fields', ['type' => 'radio_button']);
     }
 
     /** @test */
-    public function form_fields_can_be_check_boxes()
+    public function form_fields_can_be_check_box()
     {
-        // Arrange
-    
-        // Act
-    
-        // Assert
+        $this->signIn();
+        $allowable_types = \App\Form\FieldTypes::get();
+        $this->assertContains('check_box', $allowable_types);
+
+        $form = make('App\Form')->toArray();
+        $form['fields'] = [
+            make('App\FormField', ['type' => 'check_box'])->toArray(),
+        ];
+        $request = $this->post('/forms', $form);
+
+        $this->assertDatabaseHas('form_fields', ['type' => 'check_box']);
     }
 
     /** @test */
-    public function form_fields_can_be_dropdown_menus()
+    public function form_fields_can_be_dropdown_menu()
     {
-        // Arrange
-    
-        // Act
-    
-        // Assert
+        $this->signIn();
+        $allowable_types = \App\Form\FieldTypes::get();
+        $this->assertContains('dropdown_menu', $allowable_types);
+
+        $form = make('App\Form')->toArray();
+        $form['fields'] = [
+            make('App\FormField', ['type' => 'dropdown_menu'])->toArray(),
+        ];
+        $request = $this->post('/forms', $form);
+
+        $this->assertDatabaseHas('form_fields', ['type' => 'dropdown_menu']);
     }
 
     /** @test */
-    public function form_fields_can_be_number_inputs()
+    public function form_fields_can_be_number_input()
     {
-        // Arrange
-    
-        // Act
-    
-        // Assert
+        $this->signIn();
+        $allowable_types = \App\Form\FieldTypes::get();
+        $this->assertContains('number_input', $allowable_types);
+
+        $form = make('App\Form')->toArray();
+        $form['fields'] = [
+            make('App\FormField', ['type' => 'number_input'])->toArray(),
+        ];
+        $request = $this->post('/forms', $form);
+
+        $this->assertDatabaseHas('form_fields', ['type' => 'number_input']);
     }
 
     /** @test */
-    public function form_fields_can_be_text_inputs()
+    public function form_fields_can_be_text_input()
     {
-        // Arrange
-    
-        // Act
-    
-        // Assert
+        $this->signIn();
+        $allowable_types = \App\Form\FieldTypes::get();
+        $this->assertContains('text_input', $allowable_types);
+
+        $form = make('App\Form')->toArray();
+        $form['fields'] = [
+            make('App\FormField', ['type' => 'text_input'])->toArray(),
+        ];
+        $request = $this->post('/forms', $form);
+
+        $this->assertDatabaseHas('form_fields', ['type' => 'text_input']);
     }
 
     /** @test */
-    public function form_fields_can_be_hidden_inputs()
+    public function form_fields_can_be_hidden_input()
     {
-        // Arrange
-    
-        // Act
-    
-        // Assert
+        $this->signIn();
+        $allowable_types = \App\Form\FieldTypes::get();
+        $this->assertContains('hidden_input', $allowable_types);
+
+        $form = make('App\Form')->toArray();
+        $form['fields'] = [
+            make('App\FormField', ['type' => 'hidden_input'])->toArray(),
+        ];
+        $request = $this->post('/forms', $form);
+
+        $this->assertDatabaseHas('form_fields', ['type' => 'hidden_input']);
+    }
+
+    /** @test */
+    public function form_fields_type_cannot_be_something_other_then_a_value_returned_by_the_form_field_type_object()
+    {
+        $this->signIn()->withExceptionHandling();
+        $allowable_types = \App\Form\FieldTypes::get();
+        $this->assertNotContains('invalid_form_type', $allowable_types);
+
+        $form = make('App\Form')->toArray();
+        $form['fields'] = [
+            make('App\FormField', ['type' => 'invalid_form_type'])->toArray(),
+        ];
+        $request = $this->post('/forms', $form);
+
+        $this->assertDatabaseMissing('form_fields', ['type' => 'invalid_form_type']);
+    }
+
+    /** @test */
+    public function an_invalid_form_field_type_will_keep_a_new_from_from_being_created()
+    {
+        $this->signIn()->withExceptionHandling();
+
+        $form = make('App\Form')->toArray();
+        $form['fields'] = [
+            make('App\FormField', ['type' => 'invalid_form_type'])->toArray(),
+        ];
+        $request = $this->post('/forms', $form);
+
+        $this->assertDatabaseMissing('forms', ['type' => $form['type']]);
     }
     
     /** @test */
     public function form_fields_have_a_value()
     {
-        // Arrange
-    
-        // Act
-    
-        // Assert
+        $this->signIn();
+
+        $form = make('App\Form')->toArray();
+        $form['fields'] = [
+            make('App\FormField', ['value' => 'test_value'])->toArray(),
+        ];
+        $request = $this->post('/forms', $form);
+
+        $this->assertDatabaseHas('form_fields', ['value' => 'test_value']);
     }
 
     /** @test */
     public function form_fields_have_a_final_modified_value()
     {
-        // Arrange
-    
-        // Act
-    
-        // Assert
+        $this->signIn();
+
+        $form = make('App\Form')->toArray();
+        $form['fields'] = [
+            make('App\FormField', ['final_value' => 'test_value'])->toArray(),
+        ];
+        $request = $this->post('/forms', $form);
+
+        $this->assertDatabaseHas('form_fields', ['final_value' => 'test_value']);
     }
 
     /** @test */
-    public function form_fields_final_modified_value_can_affect_another_form_fields_final_modified_value_but_not_its_own()
+    public function form_fields_final_modified_value_can_affect_another_form_fields_final_modified_value()
     {
-        // Arrange
-    
-        // Act
-    
-        // Assert
+        $this->signIn();
+
+        $form = make('App\Form')->toArray();
+        $form['fields'] = [
+            make('App\FormField', ['name' => 'test1', 'affects' => 'test2'])->toArray(),
+            make('App\FormField', ['name' => 'test2'])->toArray(),
+        ];
+        $request = $this->post('/forms', $form);
+
+        $this->assertDatabaseHas('form_fields', ['name' => 'test1', 'affects' => 'test2']);
     }
 
     /** @test */
     public function form_fields_final_value_can_affect_the_total()
     {
-        // Arrange
-    
-        // Act
-    
-        // Assert
+        $this->signIn();
+
+        $form = make('App\Form')->toArray();
+        $form['fields'] = [
+            make('App\FormField', ['name' => 'test1', 'affects' => 'total'])->toArray(),
+        ];
+        $request = $this->post('/forms', $form);
+
+        $this->assertDatabaseHas('form_fields', ['name' => 'test1', 'affects' => 'total']);
+    }
+
+    /** @test */
+    public function form_fields_final_value_cannot_affect_something_other_than_an_existing_form_field_or_the_total()
+    {
+        $this->signIn()->withExceptionHandling();
+
+        $form = make('App\Form')->toArray();
+        $form['fields'] = [
+            make('App\FormField', ['name' => 'test1', 'affects' => 'invalid-value'])->toArray(),
+            make('App\FormField', ['name' => 'test2'])->toArray(),
+        ];
+        $request = $this->post('/forms', $form);
+
+        $request->assertSessionHasErrors('fields.0.affects');
+        $this->assertDatabaseMissing('form_fields', ['name' => 'test1', 'affects' => 'invalid-value']);
+    }
+
+    /** @test */
+    public function form_fields_final_modified_value_can_not_affect_its_own_final_modified_value()
+    {
+        $this->signIn()->withExceptionHandling();
+
+        $form = make('App\Form')->toArray();
+        $form['fields'] = [
+            make('App\FormField', ['name' => 'test1', 'affects' => 'test1'])->toArray(),
+            make('App\FormField', ['name' => 'test2'])->toArray(),
+        ];
+        $request = $this->post('/forms', $form);
+
+        $request->assertSessionHasErrors('fields.0.affects');
+        $this->assertDatabaseMissing('form_fields', ['name' => 'test1', 'affects' => 'test1']);
     }
 
     /** @test */
     public function forms_have_themes()
     {
-        // Arrange
-    
-        // Act
-    
-        // Assert
-    }
+        $this->signIn();
 
-    /** @test */
-    public function forms_can_be_soft_deleted()
-    {
-        // Arrange
-    
-        // Act
-    
-        // Assert
+        $form = create('App\Form', ['theme' => $theme = 'blue']);
+
+        $this->assertEquals($theme, $form->theme);
     }
 }
