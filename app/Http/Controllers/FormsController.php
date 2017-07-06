@@ -81,12 +81,14 @@ class FormsController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param  string  $uuid
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($uuid)
     {
-        //
+        $form = Form::published($uuid)->firstOrFail();
+
+        return $form->name;
     }
 
     /**

@@ -16,10 +16,13 @@ class CreateFormsTable extends Migration
         Schema::create('forms', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('user_id');
+            $table->string('uuid');
             $table->string('name')->nullable();
+            $table->char('name_display')->limit(1)->default('Y');
             $table->string('type');
             $table->string('theme')->default('default');
             $table->timestamp('published_at')->nullable();
+            $table->softDeletes();
             $table->timestamps();
         });
     }

@@ -6,7 +6,6 @@ use Tests\TestCase;
 
 class FormSubmissionsTest extends TestCase
 {
-
     /** @test */
     public function users_cannot_view_other_users_form_submissions()
     {

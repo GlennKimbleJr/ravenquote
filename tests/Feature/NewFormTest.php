@@ -385,4 +385,19 @@ class NewFormTest extends TestCase
 
         $this->assertEquals($theme, $form->theme);
     }
+
+    /** @test */
+    public function valid_uuids_are_generated_at_creation()
+    {
+        $this->signIn();
+
+        $form = create('App\Form', ['theme' => $theme = 'blue']);
+
+        $this->assertNotNull($form->uuid);
+        $this->assertEquals(36, strlen($form->uuid));
+        $this->assertRegExp(
+            '/[a-f0-9]{8}-?[a-f0-9]{4}-?4[a-f0-9]{3}-?[89ab][a-f0-9]{3}-?[a-f0-9]{12}/', 
+            $form->uuid
+        );
+    }
 }
