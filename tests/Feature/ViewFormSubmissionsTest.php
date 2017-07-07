@@ -6,7 +6,7 @@ use Carbon\Carbon;
 use Tests\TestCase;
 use App\Exceptions\UnauthorizedAccessException;
 
-class FormSubmissionsTest extends TestCase
+class ViewFormSubmissionsTest extends TestCase
 {
     /** @test */
     public function users_cannot_view_other_users_form_submissions()

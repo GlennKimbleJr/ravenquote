@@ -51,6 +51,8 @@ class UseFormTest extends TestCase
     /** @test */
     public function form_submissions_are_saved_to_the_database()
     {
+        $this->signIn();
+
         $form = create('App\Form', [
             'name' => $name = 'Test Form',
             'published_at' => Carbon::now()
@@ -73,6 +75,8 @@ class UseFormTest extends TestCase
     /** @test */
     public function invalid_fields_in_a_form_submissions_are_not_saved_to_the_database_but_valid_fields_are()
     {
+        $this->signIn();
+
         $form = create('App\Form', [
             'name' => $name = 'Test Form',
             'published_at' => Carbon::now()
@@ -103,4 +107,3 @@ class UseFormTest extends TestCase
         $this->assertSoftDeleted('forms', ['id' => $form->id]);
     }
 }
-

@@ -49,9 +49,9 @@ class NewFormTest extends TestCase
     {
         $this->signIn();
 
-        $form = create('App\Form', ['name' => $name = 'Test Name']);
+        $form = create('App\Form', ['name' => 'Test Name']);
 
-        $this->assertEquals($name, $form->name);
+        $this->assertEquals('Test Name', $form->fresh()->name);
     }
 
     /** @test */
