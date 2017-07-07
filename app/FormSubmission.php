@@ -32,4 +32,14 @@ class FormSubmission extends Model
     {
         return json_decode($this->attributes['data']);
     }
+
+    /**
+     * Define an inverse one-to-one or many relationship.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function form()
+    {
+        return $this->belongsTo(Form::class);
+    }
 }
