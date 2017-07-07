@@ -5,10 +5,16 @@ namespace App\Http\Controllers;
 use App\Form;
 use App\FormField;
 use App\FormSubmission;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class FormSubmissionController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware(['auth', 'form_owner'])->only('show');
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -57,7 +63,14 @@ class FormSubmissionController extends Controller
      */
     public function show($id)
     {
-        return FormSubmission::whereId($id)->firstOrFail();
+        $submission = FormSubmission::whereId($id)->firstOrFail();
+
+        if ($submission->read_at === NULL) {
+            $submission->read_at = Carbon::now();
+            $submission->save();
+        }
+
+        return $submission;
     }
 
     /**

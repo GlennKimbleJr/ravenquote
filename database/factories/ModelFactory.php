@@ -50,3 +50,15 @@ $factory->define(App\FormField::class, function (Faker\Generator $faker) {
         'affects' => 'total',
     ];
 });
+
+/** @var \Illuminate\Database\Eloquent\Factory $factory */
+$factory->define(App\FormSubmission::class, function (Faker\Generator $faker) {
+    $field_types = App\Form\FieldTypes::get();
+    $total_field_types = count($field_types) - 1;
+    $type = $field_types[rand(0,$total_field_types)];
+
+    return [
+        'form_id' => factory('App\Form')->create(),
+        'data' => json_encode(['test' => 'data'])
+    ];
+});

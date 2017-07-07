@@ -17,6 +17,8 @@ class CreateFormSubmissionsTable extends Migration
             $table->increments('id');
             $table->unsignedInteger('form_id');
             $table->text('data');
+            $table->timestamp('read_at')->nullable();
+            $table->timestamp('deleted_at')->nullable();
             $table->timestamps();
         });
     }

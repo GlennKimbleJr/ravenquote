@@ -3,15 +3,25 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class FormSubmission extends Model
 {
+    use SoftDeletes;
+
     /**
      * The attributes that aren't mass assignable.
      *
      * @var array
      */
     protected $guarded = [];
+
+    /**
+     * Additional attributes that should be mutated to dates.
+     *
+     * @var array
+     */
+    public $dates = ['read_at', 'deleted_at'];
 
     /**
      * Always return the data field as json.
