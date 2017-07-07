@@ -26,7 +26,9 @@ class FormsController extends Controller
      */
     public function index()
     {
-        //
+        return view('forms.index', [
+            'forms' => Form::whereUserId(auth()->user()->id)->get()
+        ]);
     }
 
     /**
@@ -36,7 +38,7 @@ class FormsController extends Controller
      */
     public function create()
     {
-        //
+        return view('forms.create');
     }
 
     /**

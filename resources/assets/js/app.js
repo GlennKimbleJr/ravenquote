@@ -6,6 +6,7 @@
  */
 
 require('./bootstrap');
+require('./webflow');
 
 window.Vue = require('vue');
 
