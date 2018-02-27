@@ -57,5 +57,6 @@ class Kernel extends HttpKernel
         'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'form_owner' => \App\Http\Middleware\IsFormOwner::class,
+        'TestMiddlware' => \App\Http\Middleware\TestMiddlware::class,
     ];
 }
