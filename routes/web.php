@@ -24,3 +24,5 @@ Route::get('/forms/{uuid}', 'FormsController@show')->name('view_form');
 Route::post('/forms/{uuid}', 'FormSubmissionController@store')->name('form_submit');
 
 Route::get('/submissions/{id}', 'FormSubmissionController@show')->name('submission');
+
+Route::post('/testroute', 'TestController@store')->middleware('TestMiddlware');
